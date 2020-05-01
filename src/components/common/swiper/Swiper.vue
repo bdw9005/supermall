@@ -50,7 +50,7 @@
 
         // 2.开启定时器
         this.startTimer();
-      }, 100)
+      }, 200)
     },
     methods: {
 		  /**
@@ -59,6 +59,7 @@
       startTimer: function () {
 		    this.playTimer = window.setInterval(() => {
 		      this.currentIndex++;
+          // console.log(this.currentIndex)
 		      this.scrollContent(-this.currentIndex * this.totalWidth);
         }, this.interval)
       },

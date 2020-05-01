@@ -5,7 +5,20 @@ export function getHomeMultidata() {
     url: '/home/multidata'
   })
 }
-
+export function getHomeContentData() {
+  return request({
+    url: '/home/content'
+  })
+}
+export function getHomeProductsData(type, pageNum) {
+  return request({
+    url: '/home/productlist',
+    params: {
+      type,
+      pageNum
+    }
+  })
+}
 export function getHomeGoods(type, page) {
   return request({
     url: '/home/data',

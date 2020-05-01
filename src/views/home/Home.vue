@@ -1,17 +1,19 @@
 <template>
   <div id="home" class="wrapper">
-    <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <nav-bar class="home-nav"><div slot="center">首页</div></nav-bar>
     <scroll class="content"
             ref="scroll"
             :probe-type="3"
             @scroll="contentScroll"
             :pull-up-load="true"
             @pullingUp="loadMore">
-      <home-swiper :banners="banners"/>
-      <recommend-view :recommends="recommends"/>
-      <feature-view/>
+      <!--<home-swiper :banners="banners"/>-->
+      <!--<recommend-view :recommends="recommends"/>-->
+      <home-swiper :banners="advertises"/>
+      <recommend-view :recommends="brands"/>
+      <feature-view :features="newProducts"/>
       <tab-control class="tab-control"
-                   :titles="['流行', '新款', '精选']"
+                   :titles="['热门', '新款']"
                    @tabClick="tabClick"/>
       <good-list :goods="showGoods"/>
     </scroll>
@@ -31,7 +33,7 @@
   import Scroll from 'components/common/scroll/Scroll'
   import BackTop from 'components/content/backTop/BackTop'
 
-  import { getHomeMultidata, getHomeGoods } from "network/home"
+  import { getHomeContentData,getHomeMultidata, getHomeGoods } from "network/home"
 
   export default {
     name: "Home",
@@ -47,12 +49,19 @@
     },
     data() {
       return {
+        advertises: [],
+        brands: [],
+        hotProducts: [],
+        newProducts: [],
+        subjects: [],
+        homeFlashPromotion: [],
+
         banners: [],
         recommends: [],
         goods: {
           'pop': {page: 0, list: []},
           'new': {page: 0, list: []},
-          'sell': {page: 0, list: []},
+          // 'sell': {page: 0, list: []},
         },
         currentType: 'pop',
         isShowBackTop: false
@@ -65,12 +74,12 @@
     },
     created() {
       // 1.请求多个数据
-      this.getHomeMultidata()
-
+      // this.getHomeMultidata()
+      this.getHomeContentData()
       // 2.请求商品数据
-      this.getHomeGoods('pop')
-      this.getHomeGoods('new')
-      this.getHomeGoods('sell')
+      // this.getHomeGoods('pop')
+      // this.getHomeGoods('new')
+      // this.getHomeGoods('sell')
     },
     methods: {
       /**
@@ -84,9 +93,9 @@
           case 1:
             this.currentType = 'new'
             break
-          case 2:
-            this.currentType = 'sell'
-            break
+          // case 2:
+          //   this.currentType = 'sell'
+          //   break
         }
       },
       backClick() {
@@ -104,8 +113,27 @@
       getHomeMultidata() {
         getHomeMultidata().then(res => {
           // this.result = res;
+          // console.log(res)
           this.banners = res.data.banner.list;
           this.recommends = res.data.recommend.list;
+        })
+      },
+      /**
+       * 轮播图
+       */
+      getHomeContentData() {
+        getHomeContentData().then(res => {
+          // this.result = res;
+          console.log(res)
+          this.advertises = res.data.advertiseList;
+          this.brands =res.data.brandList;
+          this.hotProducts =res.data.hotProductList;
+          this.newProducts =res.data.newProductList;
+          this.subjects =res.data.subjectList;
+          this.homeFlashPromotion =res.data.homeFlashPromotion;
+          //this.recommends = res.data.recommend.list;
+          console.log('------')
+          console.log(this.advertises)
         })
       },
       getHomeGoods(type) {
