@@ -10,12 +10,13 @@ export function getHomeContentData() {
     url: '/home/content'
   })
 }
-export function getHomeProductsData(type, pageNum) {
+export function getHomeProductsData(type, pageNum,pageSize) {
   return request({
-    url: '/home/productlist',
+    url: '/home/productList',
     params: {
       type,
-      pageNum
+      pageNum,
+      pageSize
     }
   })
 }

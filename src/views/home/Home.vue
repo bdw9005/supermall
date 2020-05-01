@@ -7,15 +7,14 @@
             @scroll="contentScroll"
             :pull-up-load="true"
             @pullingUp="loadMore">
-      <!--<home-swiper :banners="banners"/>-->
-      <!--<recommend-view :recommends="recommends"/>-->
+
       <home-swiper :banners="advertises"/>
       <recommend-view :recommends="brands"/>
       <feature-view :features="newProducts"/>
       <tab-control class="tab-control"
                    :titles="['热门', '新款']"
                    @tabClick="tabClick"/>
-      <good-list :goods="showGoods"/>
+      <good-list :goods="showProducts"/>
     </scroll>
     <div>呵呵呵呵</div>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
@@ -33,7 +32,7 @@
   import Scroll from 'components/common/scroll/Scroll'
   import BackTop from 'components/content/backTop/BackTop'
 
-  import { getHomeContentData,getHomeMultidata, getHomeGoods } from "network/home"
+  import { getHomeContentData,getHomeProductsData } from "network/home"
 
   export default {
     name: "Home",
@@ -55,6 +54,11 @@
         newProducts: [],
         subjects: [],
         homeFlashPromotion: [],
+        products: {
+          'pop': {pageNum: 0, list: []},
+          'new': {pageNum: 0, list: []},
+          // 'sell': {page: 0, list: []},
+        },
 
         banners: [],
         recommends: [],
@@ -68,17 +72,16 @@
       }
     },
     computed: {
-      showGoods() {
-        return this.goods[this.currentType].list
+      showProducts() {
+        return this.products[this.currentType].list
       }
     },
     created() {
       // 1.请求多个数据
-      // this.getHomeMultidata()
       this.getHomeContentData()
       // 2.请求商品数据
-      // this.getHomeGoods('pop')
-      // this.getHomeGoods('new')
+      this.getHomeProductsData('pop')
+      this.getHomeProductsData('new')
       // this.getHomeGoods('sell')
     },
     methods: {
@@ -105,44 +108,35 @@
         this.isShowBackTop = (-position.y) > 1000
       },
       loadMore() {
-        this.getHomeGoods(this.currentType)
+        // this.getHomeGoods(this.currentType)
+        this.getHomeProductsData(this.currentType)
       },
       /**
        * 网络请求相关的方法
-       */
-      getHomeMultidata() {
-        getHomeMultidata().then(res => {
-          // this.result = res;
-          // console.log(res)
-          this.banners = res.data.banner.list;
-          this.recommends = res.data.recommend.list;
-        })
-      },
-      /**
-       * 轮播图
+       * 轮播图等内容
        */
       getHomeContentData() {
         getHomeContentData().then(res => {
-          // this.result = res;
-          console.log(res)
+          // console.log(res)
           this.advertises = res.data.advertiseList;
           this.brands =res.data.brandList;
           this.hotProducts =res.data.hotProductList;
           this.newProducts =res.data.newProductList;
           this.subjects =res.data.subjectList;
           this.homeFlashPromotion =res.data.homeFlashPromotion;
-          //this.recommends = res.data.recommend.list;
-          console.log('------')
-          console.log(this.advertises)
         })
       },
-      getHomeGoods(type) {
-        const page = this.goods[type].page + 1
-        getHomeGoods(type, page).then(res => {
-          this.goods[type].list.push(...res.data.list)
-          this.goods[type].page += 1
-
+      getHomeProductsData(type) {
+        const pageNum = this.products[type].pageNum + 1
+        const pageSize = 4
+        getHomeProductsData(type, pageNum,pageSize).then(res => {
+          // console.log("---1---")
+          // console.log(res)
+          this.products[type].list.push(...res.data)
+          this.products[type].pageNum += 1
           this.$refs.scroll.finishPullUp()
+          // console.log("----2--")
+          // console.log(this.products[type].list)
         })
       }
     }

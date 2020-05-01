@@ -1,8 +1,8 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="">
+    <img :src="goodsItem.pic" alt="">
     <div class="goods-info">
-      <p>{{goodsItem.title}}</p>
+      <p>{{goodsItem.name}}</p>
       <span class="price">{{goodsItem.price}}</span>
       <span class="collect">{{goodsItem.cfav}}</span>
     </div>
