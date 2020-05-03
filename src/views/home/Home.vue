@@ -83,6 +83,11 @@
       this.getHomeProductsData('pop')
       this.getHomeProductsData('new')
       // this.getHomeGoods('sell')
+      // 3.监听item中，图片加载完成
+      this.$bus.$on('itemImageLoad', () => {
+        console.log('------');
+        this.$refs.scroll.refresh()
+      })
     },
     methods: {
       /**
@@ -128,7 +133,7 @@
       },
       getHomeProductsData(type) {
         const pageNum = this.products[type].pageNum + 1
-        const pageSize = 4
+        const pageSize = 6
         getHomeProductsData(type, pageNum,pageSize).then(res => {
           // console.log("---1---")
           // console.log(res)
